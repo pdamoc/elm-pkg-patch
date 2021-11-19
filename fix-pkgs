@@ -1,0 +1,30 @@
+pkgs="
+elm/core pdamoc/core 1.0.5
+"
+IFS_BAK=$IFS
+IFS=$'\n'
+
+rm -rf elm-stuff
+
+for line in $pkgs; do
+    IFS=$IFS_BAK
+    a=($line)
+    pkg=${a[0]}
+    pkgfix=${a[1]}
+    version=${a[2]}
+
+    saveIFS=$IFS
+    IFS='/'
+    b=($pkg) 
+    pkgname=${b[1]} 
+    IFS=$saveIFS
+
+    mkdir -p ./elm-stuff/pkgs/0.19.1/packages/$pkg 
+    curl -L https://github.com/$pkgfix/archive/refs/tags/$version-fix.zip | bsdtar -xvf - -C ./elm-stuff/pkgs/0.19.1/packages/$pkg/
+    mv  ./elm-stuff/pkgs/0.19.1/packages/$pkg/$pkgname-$version-fix ./elm-stuff/pkgs/0.19.1/packages/$pkg/$version
+    IFS_BAK=$IFS
+    IFS=$'\n'
+done 
+IFS=$IFS_BAK
+IFS_BAK=
+
